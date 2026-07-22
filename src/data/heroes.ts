@@ -1,0 +1,228 @@
+import type { HeroRole } from '../types/hex';
+
+export interface HeroInfo {
+  role: HeroRole;
+  name: string;
+  title: string;
+  tier: number; // 1-5
+  hp: number;
+  moveRange: number | string;
+  attackRange: string;
+  lore: string;
+  emoji: string;
+  color: string;
+}
+
+/**
+ * Bestiario de las 6 piezas fundamentales + tropas (5) + bestias (2).
+ * Datos para las pantallas Bestiary, PvE y campañas.
+ */
+export const HEROES: HeroInfo[] = [
+  {
+    role: 'king',
+    name: 'Rey Aldric',
+    title: 'El Soberano',
+    tier: 5,
+    hp: 5,
+    moveRange: 1,
+    attackRange: 'Cualquier hex adyacente',
+    lore: 'Líder del ejército de la luz. Su pérdida significa la caída del reino. Porta la Espada del Alba, forjada en el primer amanecer.',
+    emoji: '👑',
+    color: '#FFD700',
+  },
+  {
+    role: 'queen',
+    name: 'Reina Lyra',
+    title: 'La Hechicera Coronada',
+    tier: 4,
+    hp: 4,
+    moveRange: '∞ (rey+torre)',
+    attackRange: 'Línea recta o diagonal',
+    lore: 'Maestra de la magia arcana. Su cetro canaliza los hechizos del reino. Tan letal en combate cuerpo a cuerpo como a distancia.',
+    emoji: '♛',
+    color: '#A78BFA',
+  },
+  {
+    role: 'rook',
+    name: 'Torre Brutus',
+    title: 'El Centinela de Acero',
+    tier: 4,
+    hp: 4,
+    moveRange: '∞ (línea recta)',
+    attackRange: 'Línea recta',
+    lore: 'Antigua fortaleza andante. Su armadura ha resistido mil asedios. Camina lento pero irrompible.',
+    emoji: '🗼',
+    color: '#94A3B8',
+  },
+  {
+    role: 'bishop',
+    name: 'Albus el Sabio',
+    title: 'Sumo Sacerdote',
+    tier: 3,
+    hp: 3,
+    moveRange: '∞ (diagonal)',
+    attackRange: 'Diagonal',
+    lore: 'Guardia de los antiguos saberes. Su mitra bendecida puede curar aliados si la mecánica lo permite. Diestros en las artes arcanas.',
+    emoji: '⛪',
+    color: '#60A5FA',
+  },
+  {
+    role: 'knight',
+    name: 'Sir Gawain',
+    title: 'El Caballero Sin Miedo',
+    tier: 3,
+    hp: 3,
+    moveRange: 'L (salta 2+1)',
+    attackRange: 'Casillas en L',
+    lore: 'Saltando sobre líneas enemigas, Gawain alcanza donde otros no pueden. Su lanza atraviesa corazas como si fueran papel.',
+    emoji: '♞',
+    color: '#22C55E',
+  },
+  {
+    role: 'pawn',
+    name: 'Peón Veterano',
+    title: 'Línea de Infantería',
+    tier: 1,
+    hp: 2,
+    moveRange: 1,
+    attackRange: '1 hex adelante',
+    lore: 'El corazón del ejército. Promueve a una pieza mayor si alcanza la base enemiga. Subestimar su número es el error de los generales novatos.',
+    emoji: '♟',
+    color: '#9CA3AF',
+  },
+  {
+    role: 'pawn',
+    name: 'Hostigador',
+    title: 'Tropa · Hostigadores',
+    tier: 2,
+    hp: 2,
+    moveRange: 2,
+    attackRange: 'A distancia (v2)',
+    lore: 'Arqueros y ballesteros ligeros. Hostigan desde lejos sin exponerse al cuerpo a cuerpo.',
+    emoji: '🏹',
+    color: '#A16207',
+  },
+  {
+    role: 'pawn',
+    name: 'Artillería',
+    title: 'Tropa · Artillería',
+    tier: 3,
+    hp: 3,
+    moveRange: 1,
+    attackRange: 'Ataque de área',
+    lore: 'Catapultas y bombarda. Lentos pero devastadores. Cambio propuesto para v2.',
+    emoji: '💣',
+    color: '#7C2D12',
+  },
+  {
+    role: 'pawn',
+    name: 'Clérigo',
+    title: 'Tropa · Clérigo',
+    tier: 2,
+    hp: 2,
+    moveRange: 1,
+    attackRange: 'Cura aliados',
+    lore: 'Sacerdotes de batalla. Su rol es sanar, no matar. Cambio propuesto para v2.',
+    emoji: '✨',
+    color: '#FBBF24',
+  },
+  {
+    role: 'pawn',
+    name: 'Explorador',
+    title: 'Tropa · Explorador',
+    tier: 2,
+    hp: 2,
+    moveRange: 3,
+    attackRange: 'Cuerpo a cuerpo',
+    lore: 'Avanzan rápido y revelan niebla. Ideales para flanqueo y captura de puntos.',
+    emoji: '🔭',
+    color: '#0EA5E9',
+  },
+  {
+    role: 'pawn',
+    name: 'Lobo Sombrío',
+    title: 'Bestia · Lobo',
+    tier: 2,
+    hp: 3,
+    moveRange: 3,
+    attackRange: 'Salto de 2 hex',
+    lore: 'Bestia neutral. Puede ser domesticada con cartas especiales. Ataca en manada.',
+    emoji: '🐺',
+    color: '#4B5563',
+  },
+  {
+    role: 'pawn',
+    name: 'Jabalí Enorme',
+    title: 'Bestia · Jabalí',
+    tier: 3,
+    hp: 4,
+    moveRange: 2,
+    attackRange: 'Cuerpo a cuerpo',
+    lore: 'Bestia neutral territorial. Carga devastadora. Ataca a quien entre en su hex.',
+    emoji: '🐗',
+    color: '#854D0E',
+  },
+];
+
+export const REGION_INFO = [
+  {
+    id: 'plains',
+    name: 'Kingdom Plains',
+    subtitle: 'The Fields of Dawn',
+    description: 'Llanuras abiertas al amanecer. Primera línea del avance oscuro. El Sovereign reúne a su ejército aquí.',
+    biome: 'llanura',
+    difficulty: 1,
+    nodes: [
+      { id: 'p1', type: 'batalla', name: 'Encuentro en la Pradera' },
+      { id: 'p2', type: 'batalla', name: 'Defender la Colina' },
+      { id: 'p3', type: 'tesoro', name: 'Cofre del Guardián' },
+      { id: 'p4', type: 'batalla', name: 'Avanzar hacia el Bosque' },
+      { id: 'p5', type: 'jefe', name: 'Jefe: General Sombra' },
+    ],
+  },
+  {
+    id: 'forest',
+    name: 'Shadow Forest',
+    subtitle: 'Where Ambush Dwells',
+    description: 'Bosque sombrío donde la luz no penetra. Emboscadas constantes. La IA juega más astuta.',
+    biome: 'bosque',
+    difficulty: 2,
+    nodes: [
+      { id: 'f1', type: 'batalla', name: 'Camino entre Robles' },
+      { id: 'f2', type: 'batalla', name: 'Lobo Solitario' },
+      { id: 'f3', type: 'tesoro', name: 'Altar Antiguo' },
+      { id: 'f4', type: 'batalla', name: 'Claro de las Hadas' },
+      { id: 'f5', type: 'jefe', name: 'Jefa: Bruja del Bosque' },
+    ],
+  },
+  {
+    id: 'peaks',
+    name: 'Highland Peaks',
+    subtitle: 'The High Ground',
+    description: 'Cumbres donde el viento corta. Ventaja de altura: las piezas en alto ven más lejos y reciben menos daño.',
+    biome: 'altura',
+    difficulty: 3,
+    nodes: [
+      { id: 'h1', type: 'batalla', name: 'Sendero de Montaña' },
+      { id: 'h2', type: 'batalla', name: 'Águilas de la Cima' },
+      { id: 'h3', type: 'tesoro', name: 'Cofre del Pico' },
+      { id: 'h4', type: 'batalla', name: 'Torre de Vigilancia' },
+      { id: 'h5', type: 'jefe', name: 'Jefe: Señor de las Cumbres' },
+    ],
+  },
+  {
+    id: 'fortress',
+    name: 'Enemy Fortress',
+    subtitle: "The Lost Kingdom's Heart",
+    description: 'Fortaleza enemiga. El corazón del reino perdido. Aquí aguarda el Monarca Caído.',
+    biome: 'fortaleza',
+    difficulty: 4,
+    nodes: [
+      { id: 'e1', type: 'batalla', name: 'Murallas Oscuras' },
+      { id: 'e2', type: 'batalla', name: 'Sala del Trono Vacío' },
+      { id: 'e3', type: 'tesoro', name: 'Tesoro del Tirano' },
+      { id: 'e4', type: 'batalla', name: 'Guardianes Sombras' },
+      { id: 'e5', type: 'jefe', name: 'Jefe Final: El Monarca Caído' },
+    ],
+  },
+];
