@@ -1,6 +1,8 @@
+import { useEffect, useRef, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { ThreeEvent } from '@react-three/fiber';
 import { axialToWorld } from '../../logic/hex-grid';
-import type { Piece, HeroRole, Team } from '../../types/hex';
+import type { Piece, HeroRole, Team, AxialCoord } from '../../types/hex';
 import { TEAM_COLORS, TEAM_ACCENT } from '../../data/colors';
 
 interface HeroProps {
@@ -8,14 +10,75 @@ interface HeroProps {
   baseY: number;
   isSelected?: boolean;
   isHovered?: boolean;
+  /** Posicion anterior, para animar el salto de movimiento. */
+  fromPos?: AxialCoord | null;
+  /** Posicion destino (si difiere de piece.position). */
+  toPos?: AxialCoord | null;
+  /** Si la pieza esta atacando (animacion de lunge adelante). */
+  isAttacking?: boolean;
   onClick?: (id: string) => void;
   onPointerOver?: (id: string) => void;
   onPointerOut?: () => void;
+  /** Callback que se llama cuando termina la animacion de salto. */
+  onAnimationDone?: () => void;
 }
 
-export default function Hero({ piece, baseY, isSelected, isHovered, onClick, onPointerOver, onPointerOut }: HeroProps) {
-  if (!piece.position) return null;
-  const [x, , z] = axialToWorld(piece.position, 1.0);
+const ANIM_MS = 380;
+
+export default function Hero({
+  piece, baseY, isSelected, isHovered,
+  fromPos, toPos, isAttacking,
+  onClick, onPointerOver, onPointerOut, onAnimationDone,
+}: HeroProps) {
+  const groupRef = useRef<THREE.Group>(null);
+  const startTimeRef = useRef<number>(0);
+  const [animDone, setAnimDone] = useState(false);
+
+  // Inicializa anim cuando fromPos cambia
+  useEffect(() => {
+    if (fromPos && groupRef.current) {
+      const [fx, , fz] = axialToWorld(fromPos, 1.0);
+      groupRef.current.position.set(fx, baseY + 0.5, fz);
+      startTimeRef.current = performance.now();
+      setAnimDone(false);
+    }
+  }, [fromPos, baseY]);
+
+  useFrame(() => {
+    const g = groupRef.current;
+    if (!g) return;
+    if (!fromPos || animDone || !piece.position) {
+      // No animar, posicion fija
+      const [x, , z] = axialToWorld(piece.position ?? { q: 0, r: 0 }, 1.0);
+      g.position.set(x, baseY + 0.5, z);
+      return;
+    }
+    const elapsed = performance.now() - startTimeRef.current;
+    const t = Math.min(1, elapsed / ANIM_MS);
+    // Easing: ease-out cubic
+    const eased = 1 - Math.pow(1 - t, 3);
+    const [fx, , fz] = axialToWorld(fromPos, 1.0);
+    const [tx, , tz] = axialToWorld(piece.position, 1.0);
+    const x = fx + (tx - fx) * eased;
+    const z = fz + (tz - fz) * eased;
+    // Salto: arco parabolico (altura pico a t=0.5)
+    const arc = Math.sin(eased * Math.PI) * 0.8;
+    const y = (baseY + 0.5) + arc;
+    g.position.set(x, y, z);
+    if (isAttacking && t > 0.7) {
+      // Lunge hacia adelante al final del movimiento
+      g.rotation.z = Math.sin((t - 0.7) * Math.PI * 3) * 0.15;
+    }
+    if (t >= 1) {
+      setAnimDone(true);
+      // Notificamos al padre que la anim termino para limpiar el motion.
+      // (board removera la entrada en motions[]).
+      if (typeof onAnimationDone === 'function') onAnimationDone();
+    }
+  });
+
+  if (!piece.position && !toPos) return null;
+  const [x, , z] = axialToWorld(piece.position ?? { q: 0, r: 0 }, 1.0);
   const y = baseY + 0.5;
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
@@ -33,7 +96,7 @@ export default function Hero({ piece, baseY, isSelected, isHovered, onClick, onP
   };
 
   return (
-    <group position={[x, y, z]} onClick={handleClick} onPointerOver={handleOver} onPointerOut={handleOut}>
+    <group ref={groupRef} position={[x, y, z]} onClick={handleClick} onPointerOver={handleOver} onPointerOut={handleOut}>
       {/* Base oscura contrastante — para que la pieza destaque sobre CUALQUIER hex */}
       <mesh position={[0, -0.45, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[0.5, 0.55, 0.15, 6]} />
