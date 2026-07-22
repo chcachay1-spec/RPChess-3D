@@ -4382,3 +4382,284 @@ body {
   font-size: 7px;
   letter-spacing: 0.12em;
 }
+
+/* ============================================================
+   Mobile-first responsive layout (<= 720px)
+   ============================================================ */
+@media (max-width: 720px) {
+  /* El Canvas 3D va a pantalla completa — sacamos las HUD pesadas */
+  .hud__top {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .hud__brand { font-size: 11px; }
+  .hud__brand .hud__logo { font-size: 18px; }
+  .hud__turn, .hud__shuffle {
+    padding: 4px 8px;
+  }
+  .hud__value { font-size: 14px; }
+  .hud__label { font-size: 7px; }
+  .hud__demo { display: none; } /* oculto demo en mobile */
+
+  .hud__bottom {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .hud__message {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
+  .hud__actions { gap: 6px; }
+  .hud__btn { font-size: 10px; padding: 6px 8px; }
+
+  .hud__side {
+    width: 80px;
+    padding: 6px;
+  }
+  .hud__count { font-size: 9px; padding: 4px 6px; }
+  .hud__legend { display: none; } /* oculta reglas, no entran */
+
+  /* Mano de cartas: mas chicas y separadas del borde */
+  .bhand { bottom: 6px; }
+  .bhand__card { width: 86px; height: 118px; padding: 6px 4px; }
+  .bhand__card-emoji { font-size: 32px; }
+  .bhand__card-name { font-size: 9px; }
+  .bhand__left { padding-right: 8px; gap: 6px; }
+  .bhand__energy { padding: 4px 8px; }
+  .bhand__energy-value { font-size: 14px; }
+
+  /* SubScreens: padding reducido, grid 1-col, fuentes mas chicas */
+  .subscreen__panel { border-radius: 0; }
+  .subscreen__header { padding: 10px 12px; gap: 8px; flex-wrap: nowrap; }
+  .subscreen__back { font-size: 9px; padding: 4px 8px; }
+  .subscreen__back-arrow { font-size: 12px; }
+  .subscreen__title {
+    font-size: clamp(15px, 4.8vw, 22px);
+    flex: 1;
+    text-align: center;
+  }
+  .subscreen__stars {
+    font-size: 10px;
+    padding: 4px 8px;
+    gap: 6px;
+  }
+  .subscreen__star-count { font-size: 10px; letter-spacing: 0.04em; }
+
+  /* Hero/login: reestructurar */
+  .menu__top {
+    padding: 10px 12px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .menu__profile-chip { font-size: 9px; padding: 0 6px 0 4px; }
+  .menu__profile-name { display: none; } /* save space */
+  .menu__profile-caret { display: none; }
+  .menu__profile-avatar { width: 22px; height: 22px; font-size: 11px; }
+  .menu__langbtn { height: 28px; font-size: 9px; min-width: 36px; padding: 0 6px; }
+  .menu__iconbtn { width: 32px; height: 32px; font-size: 14px; }
+
+  .menu__logo-cinzel { font-size: clamp(28px, 8vw, 48px); }
+  .menu__logo-subtitle { font-size: 9px; letter-spacing: 0.08em; }
+
+  .menu__main { padding: 0 12px; gap: 8px; max-width: 100%; }
+  .menu__btn {
+    padding: 12px 14px;
+    font-size: 12px;
+    gap: 6px;
+  }
+  .menu__btn--big { padding: 14px 14px; font-size: 14px; }
+  .menu__btn--half { flex: 1; }
+  .menu__btn-icon { font-size: 18px; }
+  .menu__btn--big .menu__btn-icon { font-size: 22px; }
+
+  .menu__bottom { padding: 10px 12px; gap: 6px; }
+  .menu__bottom-row { gap: 4px; }
+  .menu__chip { font-size: 8px; padding: 4px 6px; gap: 4px; }
+  .menu__auth { gap: 6px; }
+  .menu__btn--auth { padding: 6px 14px; font-size: 10px; }
+  .menu__footer-meta { padding: 4px 12px 0; font-size: 8px; }
+  .menu__social { width: 24px; height: 24px; font-size: 10px; }
+
+  /* Subscreen body padding */
+  .subscreen__body { padding: 14px 12px 18px; }
+
+  /* Mode select */
+  .mode-select__lead { padding: 12px 14px 4px; font-size: 12px; }
+  .mode-select__list { padding: 10px 12px; gap: 8px; }
+  .mode-card { padding: 12px; grid-template-columns: 28px 48px 1fr; gap: 10px; }
+  .mode-card__icon { width: 48px; height: 48px; font-size: 28px; }
+  .mode-card__title { font-size: 14px; }
+  .mode-card__subtitle { font-size: 9px; }
+  .mode-card__desc { font-size: 11px; }
+  .mode-select__cta { padding: 12px 12px 16px; }
+  .mode-select__hint { font-size: 9px; }
+
+  /* Bestiary: 1 columna en mobile */
+  .bestiary__grid { grid-template-columns: 1fr; padding: 12px; }
+  .hero-card { padding: 10px; }
+  .bestiary__lead { padding: 10px 12px 4px; font-size: 12px; }
+
+  /* Cards: 1 columna (las cartas se ven enteras) */
+  .cards__grid { grid-template-columns: 1fr; padding: 12px 12px 110px; }
+  .cards__lead { padding: 12px 12px 4px; font-size: 12px; }
+  .deck-bar { padding: 10px 12px; flex-direction: column; gap: 8px; align-items: stretch; }
+  .deck-bar__info { justify-content: space-between; }
+  .deck-bar__actions { justify-content: space-between; }
+
+  /* Store: 2 col */
+  .store__grid { grid-template-columns: 1fr 1fr; padding: 8px 12px 18px; gap: 8px; }
+  .store__cats { padding: 10px 12px; }
+  .store__lead { padding: 10px 12px 4px; font-size: 12px; }
+
+  /* Season pass: grid 3-col */
+  .season-hero { grid-template-columns: 64px 1fr; gap: 10px; padding: 12px; }
+  .season-hero__crown { width: 56px; height: 56px; font-size: 32px; }
+  .season-hero__upgrade { grid-column: span 2; min-width: 0; }
+  .season-tracks { padding: 8px 12px; flex-direction: column; gap: 6px; align-items: stretch; }
+  .season-grid { grid-template-columns: repeat(3, 1fr); padding: 8px 12px 14px; gap: 6px; }
+  .season-level__num { font-size: 8px; }
+  .season-level__row { font-size: 7px; padding: 4px; }
+  .season-xp { padding: 10px 12px 4px; }
+
+  /* Profile */
+  .profile-id { grid-template-columns: auto 1fr; padding: 12px; gap: 10px; }
+  .profile-id__avatar { width: 64px; height: 64px; font-size: 32px; }
+  .profile-id__name { font-size: 18px; }
+  .profile-wallet { padding: 4px 12px 12px; gap: 6px; }
+  .profile-stats { padding: 10px 12px 12px; }
+  .profile-stats__grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .profile-stat__value { font-size: 22px; }
+  .profile-stat__label { font-size: 7px; }
+  .profile-recent { padding: 10px 12px 18px; }
+  .battle-row { grid-template-columns: auto 1fr auto; gap: 8px; padding: 8px; font-size: 11px; }
+  .battle-row__date { display: none; }
+
+  /* Config: stacks */
+  .config__section { padding: 10px 12px; }
+  .config__section-title { font-size: 12px; }
+  .config__row { flex-direction: row; gap: 10px; }
+  .config__row-label { font-size: 9px; }
+  .config__segment { width: 100%; }
+  .config__segment-btn { font-size: 9px; padding: 6px 4px; }
+  .config__slider { max-width: none; }
+  .config__footer { padding: 12px 12px 18px; flex-direction: column; align-items: stretch; }
+  .config__btn { width: 100%; }
+
+  /* News, events, etc: padding reduced */
+  .news__lead, .pve__lead, .pvp__lead, .events__lead, .collection__lead,
+  .campaign__intro-lead, .campaign__progress-meta, .draft__lead {
+    padding: 12px 14px 4px;
+    font-size: 12px;
+  }
+  .news-lead { margin: 12px; padding: 14px; gap: 10px; }
+  .news-lead__title { font-size: 17px; }
+  .news-lead__emoji { font-size: 44px; }
+  .news-list { padding: 0 12px 18px; }
+  .news-item { padding: 10px; gap: 10px; }
+  .news-item__emoji { font-size: 28px; }
+
+  .pve__list { padding: 10px 12px; gap: 10px; }
+  .pve-card {
+    grid-template-columns: 28px 64px 1fr;
+    padding: 12px;
+    gap: 10px;
+  }
+  .pve-card__icon { width: 64px; height: 56px; font-size: 32px; }
+  .pve-card__title { font-size: 16px; }
+  .pve-card__meta { gap: 10px; }
+  .pve-card__meta-item { font-size: 8px; }
+  .pve-card__meta-item strong { font-size: 11px; }
+  .pve-card__desc { font-size: 11px; }
+  .pve-card__reward { font-size: 8px; padding: 2px 6px; }
+  .pve__enemy-grid { flex-wrap: wrap; }
+  .pve__cta { padding: 12px 12px 16px; }
+
+  .pvp__modes { padding: 10px 12px; }
+  .pvp-mode { padding: 10px; gap: 8px; }
+  .pvp-mode__name { font-size: 12px; }
+  .pvp-mode__icon { width: 40px; height: 40px; font-size: 22px; }
+  .pvp__queue-searching, .pvp__queue-idle { padding: 20px 12px; }
+  .pvp__found-card { gap: 8px; }
+  .pvp__found-avatar { width: 48px; height: 48px; font-size: 22px; }
+  .pvp__roadmap { margin: 8px 12px 18px; padding: 12px; }
+
+  .events-list { padding: 0 12px 18px; }
+  .event-featured { margin: 12px; padding: 14px; }
+  .event-featured__name { font-size: 20px; }
+  .event-card { padding: 10px; }
+  .event-card__emoji { font-size: 26px; }
+
+  .collection__grid { grid-template-columns: 1fr; padding: 12px 12px 18px; }
+  .collection__tabs, .collection__tier-tabs { padding: 8px 12px; }
+  .col-piece__preview { width: 48px; height: 48px; }
+
+  /* Campaign regions mas angostos */
+  .campaign__intro { padding: 12px 14px 4px; }
+  .campaign__regions { padding: 12px; gap: 12px; }
+  .campaign__region { padding: 12px; }
+  .campaign__region-header { grid-template-columns: 56px 1fr; gap: 10px; }
+  .campaign__region-icon { width: 48px; height: 48px; }
+  .campaign__region-name { font-size: 16px; }
+  .campaign__region-sub { font-size: 11px; }
+  .campaign__region-difficulty { margin-bottom: 6px; }
+  .campaign__nodes { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .campaign__node { min-height: 88px; padding: 6px; }
+  .campaign__node-icon { font-size: 18px; }
+  .campaign__node-name { font-size: 7px; }
+  .campaign__node-stars { font-size: 7px; }
+  .campaign__footer { padding: 12px; }
+  .campaign__region-claim { font-size: 9px; }
+
+  /* Draft */
+  .draft__steps { padding: 10px 8px; gap: 4px; }
+  .draft__step { padding: 6px 8px; }
+  .draft__step-name { font-size: 10px; }
+  .draft__progress { padding: 0 12px 8px; }
+  .draft__grid { grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px 12px 12px; }
+  .draft-piece { padding: 8px; gap: 4px; }
+  .draft-piece__portrait { height: 48px; }
+  .draft-piece__emoji { font-size: 26px; }
+  .draft-piece__name { font-size: 10px; }
+  .draft-piece__stats span { font-size: 6px; padding: 3px 1px; }
+  .draft__reveal-summary { grid-template-columns: repeat(2, 1fr); padding: 10px; }
+  .draft__footer { padding: 10px; }
+  .draft__footer--actions { flex-direction: column; }
+
+  /* Battle scene modal: full-screen en mobile */
+  .bscene {
+    width: 100vw;
+    height: 75vh;
+    border-radius: 8px;
+    border-width: 1px;
+  }
+  .bscene__sprite { min-width: 96px; min-height: 160px; padding: 8px; }
+  .bscene__sprite-emoji { font-size: 56px; }
+  .bscene__vs { font-size: 22px; }
+  .bscene__damage { font-size: 28px; }
+  .bscene__stage { grid-template-columns: 1fr auto 1fr; padding: 8px 12px; gap: 6px; }
+
+  /* Result modal narrower */
+  .result-modal { width: 95vw; }
+  .result-modal__stats { grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 12px; }
+  .result-modal__rewards-grid { gap: 4px; }
+  .result-modal__actions { grid-template-columns: 1fr 1fr; padding: 10px; gap: 6px; }
+
+  /* Splash */
+  .splash__title { font-size: clamp(36px, 12vw, 56px); }
+  .splash__crown { font-size: 64px; }
+  .splash__phase { min-width: 180px; padding: 6px 10px; }
+  .splash__loader { width: 180px; }
+}
+
+@media (max-width: 480px) {
+  /* Phones mas compactos */
+  .hud__demo { display: none; }
+  .cards__grid { grid-template-columns: 1fr; }
+  .store__grid { grid-template-columns: 1fr; }
+  .draft__grid { grid-template-columns: 1fr; }
+  .collection__grid { grid-template-columns: 1fr; }
+  .bestiary__grid { grid-template-columns: 1fr; }
+  .season-grid { grid-template-columns: repeat(2, 1fr); }
+  .events-list__grid { grid-template-columns: 1fr; }
+  .campaign__nodes { grid-template-columns: repeat(2, 1fr); }
+}

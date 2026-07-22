@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useGameStore } from '../../store/game-store';
-import { CARDS, DECK_SIZE, type CardType, type Rarity } from '../../data/cards';
+import { CARDS, type CardType, type Rarity } from '../../data/cards';
+
+// Tamaño fijo del mazo de batalla segun diseño de Cris:
+// pool 30, deck de batalla 10, mano 2, roba 1 por turno.
+const BATTLE_DECK_SIZE = 10;
+const HAND_SIZE = 2;
 
 type TypeFilter = 'all' | CardType;
 
@@ -21,24 +26,28 @@ const RARITY_COLOR: Record<Rarity, string> = {
 export default function CardsScreen() {
   const setScreen = useGameStore((s) => s.setScreen);
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
-  const [deck, setDeck] = useState<string[]>(['c-b01', 'c-b03', 'c-t02', 'c-x01', 'c-t05', 'c-b05', 'c-b09', 'c-t10', 'c-x05', 'c-x08']);
+  // Draft de 10 cartas seleccionadas para el mazo de batalla.
+  // En el juego 2D, Cris elegía 10 a mano del pool de 30.
+  const [battleDeck, setBattleDeck] = useState<string[]>([
+    'c-b04', 'c-b02', 'c-x01', 'c-t02', 'c-t05', 'c-b05', 'c-b07', 'c-x02', 'c-t03', 'c-x05',
+  ]);
 
   const filtered = useMemo(() => {
     return CARDS.filter((c) => typeFilter === 'all' || c.type === typeFilter);
   }, [typeFilter]);
 
   const toggleInDeck = (id: string) => {
-    setDeck((prev) => {
+    setBattleDeck((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id);
-      if (prev.length >= DECK_SIZE) return prev; // cap
+      if (prev.length >= 10) return prev; // cap a 10 (mazo de batalla)
       return [...prev, id];
     });
   };
 
-  const clearDeck = () => setDeck([]);
-  const fillDefault = () => setDeck(['c-b01', 'c-b02', 'c-b03', 'c-b05', 'c-b09',
-                                     'c-t02', 'c-t03', 'c-t05', 'c-t08', 'c-t10',
-                                     'c-x01', 'c-x02', 'c-x05', 'c-x06', 'c-x08']);
+  const clearDeck = () => setBattleDeck([]);
+  const fillDefault = () => setBattleDeck(
+    ['c-b01','c-b02','c-b03','c-b04','c-b05','c-b09','c-t02','c-t03','c-t05','c-x01']
+  );
 
   return (
     <div className="subscreen">
@@ -78,7 +87,7 @@ export default function CardsScreen() {
         {/* Grid de cartas */}
         <div className="cards__grid">
           {filtered.map((c) => {
-            const inDeck = deck.includes(c.id);
+            const inDeck = battleDeck.includes(c.id);
             const rarityColor = RARITY_COLOR[c.rarity];
             return (
               <article
@@ -102,7 +111,7 @@ export default function CardsScreen() {
                     type="button"
                     className={`card__cta ${inDeck ? 'is-in' : ''}`}
                     onClick={() => toggleInDeck(c.id)}
-                    disabled={!inDeck && deck.length >= DECK_SIZE}
+                    disabled={!inDeck && battleDeck.length >= BATTLE_DECK_SIZE}
                   >
                     {inDeck ? '✕ Quitar' : '+ Agregar al mazo'}
                   </button>
@@ -116,11 +125,13 @@ export default function CardsScreen() {
         <div className="deck-bar">
           <div className="deck-bar__info">
             <span className="deck-bar__label">Tu Mazo</span>
-            <span className="deck-bar__count" style={{ color: deck.length === DECK_SIZE ? '#22C55E' : '#FFD700' }}>
-              {deck.length} / {DECK_SIZE}
+            <span className="deck-bar__count" style={{ color: battleDeck.length === 10 ? '#22C55E' : '#FFD700' }}>
+              {battleDeck.length} / {BATTLE_DECK_SIZE}
             </span>
             <span className="deck-bar__hint">
-              {deck.length === DECK_SIZE ? '✓ mazo listo para jugar' : `Faltan ${DECK_SIZE - deck.length}`}
+              {battleDeck.length === BATTLE_DECK_SIZE
+                ? '✓ mazo listo para jugar'
+                : `Elegi 10 cartas del pool. Faltan ${BATTLE_DECK_SIZE - battleDeck.length}`}
             </span>
           </div>
           <div className="deck-bar__actions">
@@ -129,9 +140,9 @@ export default function CardsScreen() {
             <button
               type="button"
               className="deck-bar__btn deck-bar__btn--primary"
-              disabled={deck.length === 0}
+              disabled={battleDeck.length === 0}
             >
-              💾 Guardar Mazo
+              💾 Guardar Mazo de Batalla
             </button>
           </div>
         </div>

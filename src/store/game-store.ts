@@ -243,7 +243,13 @@ export const useGameStore = create<GameState>((set, get) => ({
       msg = `🔄 ¡SHUFFLE! Turno ${newTurn} — Los relieves se han redistribuido.`;
     }
 
-    set({ turn: newTurn, reliefs, message: msg, shuffledThisTurn: shuffled });
+    // Carta + energía: roba 1 (descarta la más vieja), +1 energía (max 6).
+    const deck = state.battleDeck;
+    let hand = [...state.hand, deck[0] ?? 'c-b04'];
+    if (hand.length > 2) hand = hand.slice(-2);
+    const energy = Math.min(6, state.energy + 1);
+
+    set({ turn: newTurn, reliefs, message: msg, shuffledThisTurn: shuffled, hand, energy });
   },
 
   setHoverTarget: (id) => set({ hoverTargetId: id }),
