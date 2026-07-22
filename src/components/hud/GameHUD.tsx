@@ -1,6 +1,8 @@
 import { useGameStore } from '../../store/game-store';
 import { SHUFFLE_INTERVAL } from '../../constants';
 import BattleResultModal from '../menu/BattleResultModal';
+import BattleScene2D from '../battle/BattleScene2D';
+import BattleHand from '../battle/BattleHand';
 
 export default function GameHUD() {
   const turn = useGameStore((s) => s.turn);
@@ -13,6 +15,15 @@ export default function GameHUD() {
   const dismissBattleResult = useGameStore((s) => s.dismissBattleResult);
   const testVictory = () => useGameStore.setState({ battleResult: 'VICTORIA' });
   const testDefeat  = () => useGameStore.setState({ battleResult: 'DERROTA' });
+  const testScene2D = () => {
+    const a = useGameStore.getState().pieces.find((p) => p.team === 'ally');
+    const e = useGameStore.getState().pieces.find((p) => p.team === 'enemy');
+    if (a && e) {
+      useGameStore.getState().triggerBattleScene({
+        attackerId: a.id, targetId: e.id, cardId: 'c-b04', damageDealt: 3, isCrit: false,
+      });
+    }
+  };
   const deselect = () => useGameStore.getState().selectPiece(null);
 
   const allyCount = pieces.filter((p) => p.team === 'ally').length;
@@ -33,6 +44,7 @@ export default function GameHUD() {
           onDismiss={dismissBattleResult}
         />
       )}
+      <BattleScene2D />
 
       {/* Top bar */}
       <div className="hud__top">
@@ -56,6 +68,7 @@ export default function GameHUD() {
           <div className="hud__demo">
             <button className="hud__btn hud__btn--ghost" onClick={testVictory}>Test Victoria</button>
             <button className="hud__btn hud__btn--ghost" onClick={testDefeat}>Test Derrota</button>
+            <button className="hud__btn hud__btn--ghost" onClick={testScene2D}>Test Escena 2D</button>
           </div>
         )}
       </div>
@@ -99,6 +112,9 @@ export default function GameHUD() {
           </div>
         </div>
       </div>
+
+      {/* Mano de cartas: scroleable, 2 cartas visibles, ya con energy counter */}
+      <BattleHand />
     </div>
   );
 }

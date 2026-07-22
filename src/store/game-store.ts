@@ -5,6 +5,7 @@ import { canAttackByRelief } from '../logic/relief-rules';
 import { coordKey, getBoardHexes } from '../logic/hex-grid';
 import { getValidMoves } from '../logic/movement';
 import { BOARD_COLS, BOARD_ROWS, SHUFFLE_INTERVAL } from '../constants';
+import { CARDS } from '../data/cards';
 
 export type Screen =
   | 'menu'
@@ -27,6 +28,15 @@ export type Screen =
 
 export type BattleResult = 'VICTORIA' | 'DERROTA' | 'EMPATE' | null;
 
+/** Animacion 2D estilo Pokemon rojo fuego de un combate individual. */
+export interface BattleScene {
+  attackerId: string;
+  targetId: string;
+  cardId: string | null;
+  damageDealt: number;
+  isCrit: boolean;
+}
+
 /** Ejército seleccionado en el Draft para precargar el tablero. */
 export interface DraftArmy {
   vetas: string[];          // ids de piezas vetadas
@@ -46,6 +56,16 @@ interface GameState {
   screen: Screen;
   /** Resultado de batalla finalizado; si es no-null se muestra el modal. */
   battleResult: BattleResult;
+  /** Animacion 2D de combate activo (style Pokemon fire red). */
+  scene2D: BattleScene | null;
+  /** Mazo de cartas de batalla (10 elegidas del pool). */
+  battleDeck: string[];
+  /** Mano actual (2 cartas). */
+  hand: string[];
+  /** Energia disponible para jugar cartas (regen +1/turno, max 6). */
+  energy: number;
+  /** Energia de retencion (placeholder, se gana 1 cada 2 turnos). */
+  retention: number;
   /** Ejército armado en el Draft (persiste entre pantallas hasta jugar). */
   draftArmy: DraftArmy;
 
@@ -60,6 +80,13 @@ interface GameState {
   setScreen: (s: Screen) => void;
   /** Marca la batalla como finalizada y la cierra el modal. */
   dismissBattleResult: () => void;
+  /** Dispara una animacion 2D de combate (la cierra el componente). */
+  triggerBattleScene: (scene: BattleScene) => void;
+  dismissBattleScene: () => void;
+  /** Juega una carta: la quita de la mano y dispara su efecto (placeholder: trigger escena 2D). */
+  playCard: (cardId: string) => void;
+  /** Avanza de turno: +1 energia, roba 1 carta, descarta la mas vieja. */
+  advanceTurnCards: () => void;
   /** Setea el ejército del Draft. */
   setDraftArmy: (army: DraftArmy) => void;
 }
@@ -102,6 +129,11 @@ export const useGameStore = create<GameState>((set, get) => ({
   message: 'Bienvenido a RPChess 3D — click en una pieza aliada para empezar.',
   shuffledThisTurn: false,
   battleResult: null,
+  scene2D: null,
+  battleDeck: ['c-b04','c-t02','c-x01','c-b02','c-b05','c-t05','c-b07','c-x02','c-t03','c-x05'],
+  hand: ['c-b04', 'c-t02'],
+  energy: 2,
+  retention: 0,
   draftArmy: { vetas: [], selectedIds: [] },
   // Lee el screen desde la URL: ?screen=campaign, ?screen=pve, etc.
   // Si no hay param, usa 'menu' como default.
@@ -236,6 +268,49 @@ export const useGameStore = create<GameState>((set, get) => ({
   setScreen: (s) => set({ screen: s }),
 
   dismissBattleResult: () => set({ battleResult: null }),
+
+  triggerBattleScene: (scene) => set({ scene2D: scene }),
+  dismissBattleScene:    () => set({ scene2D: null }),
+
+  /**
+   * Jugar carta: la saca de la mano, gasta energía y dispara la escena 2D
+   * (placeholder: usa pieza aliada/enemiga cualquiera como atacante/objetivo).
+   */
+  playCard: (cardId) => {
+    const s = get();
+    const card = CARDS.find((c) => c.id === cardId);
+    const cost = card?.cost ?? 1;
+    if (s.energy < cost) return;
+    if (!s.hand.includes(cardId)) return;
+    const ally  = s.pieces.find((p) => p.team === 'ally');
+    const enemy = s.pieces.find((p) => p.team === 'enemy');
+    set({
+      energy: s.energy - cost,
+      hand: s.hand.filter((id) => id !== cardId),
+    });
+    if (ally && enemy) {
+      s.triggerBattleScene({
+        attackerId: ally.id,
+        targetId: enemy.id,
+        cardId,
+        damageDealt: 1 + Math.floor(Math.random() * 3),
+        isCrit: false,
+      });
+    }
+  },
+
+  /** Cada turno: +1 energia (max 6), roba 1 (descarta el mas viejo). */
+  advanceTurnCards: () => {
+    const s = get();
+    const newEnergy = Math.min(6, s.energy + 1);
+    // Draw 1 - descartamos el head (mas viejo). Si no hay deck remaining, reciclamos.
+    let deck = s.battleDeck;
+    let hand = [...s.hand];
+    // Usamos un cursor simple: las cartas en mano son las 2 mas recientes
+    hand.push(deck[0] ?? 'c-b04');
+    if (hand.length > 2) hand = hand.slice(-2);
+    set({ energy: newEnergy, hand });
+  },
 
   setDraftArmy: (army) => set({ draftArmy: army }),
 }));

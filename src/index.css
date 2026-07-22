@@ -4030,3 +4030,355 @@ body {
   opacity: 0.7;
 }
 .hud__demo .hud__btn:hover { opacity: 1; }
+
+/* ============================================================
+   Battle Scene 2D (animacion tipo Pokemon fire red)
+   ============================================================ */
+.bscene-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bscene-fade 0.3s ease-out;
+}
+@keyframes bscene-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.bscene {
+  width: min(720px, 92vw);
+  height: 360px;
+  background: linear-gradient(180deg, #1a1108 0%, #050203 100%);
+  border: 2px solid #FFD700;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+}
+.bscene__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.4);
+  z-index: 2;
+}
+.bscene__round {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.1em;
+}
+.bscene__card {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 4px;
+  border: 1px solid;
+  border-radius: 4px;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+.bscene__card-emoji { font-size: 18px; line-height: 1; }
+.bscene__card-cost {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 18px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #1a1100;
+}
+.bscene__card-name { font-family: var(--font-cinzel); font-size: 11px; font-weight: 700; }
+
+.bscene__stage {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 24px;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(20, 14, 30, 0.5) 100%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0 20px, transparent 20px 40px);
+}
+.bscene__vs {
+  font-family: var(--font-cinzel);
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--color-gold-3);
+  text-shadow: 0 0 12px var(--color-gold-glow);
+  letter-spacing: 0.04em;
+}
+
+.bscene__side { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; }
+.bscene__side--target { justify-content: flex-end; }
+.bscene__side--attacker { justify-content: flex-start; }
+
+.bscene__sprite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid currentColor;
+  min-width: 140px;
+  min-height: 200px;
+  transition: transform 0.15s ease-out;
+}
+.bscene__sprite-emoji {
+  font-size: 78px;
+  line-height: 1;
+  text-shadow: 0 0 18px currentColor;
+  filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.6));
+}
+.bscene__hp { width: 100%; }
+.bscene__hp-bar {
+  height: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.bscene__hp-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #22C55E 0%, #FFD700 100%);
+}
+.bscene__hp-text {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.04em;
+}
+.bscene__name {
+  font-family: var(--font-cinzel);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-gold-1);
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+/* Animaciones por fase */
+.bscene__stage[data-phase="INTRO"]    .bscene__sprite--attacker { transform: translateX(0) scale(1); }
+.bscene__stage[data-phase="ATTACK"]   .bscene__sprite--attacker { transform: translateX(70px) scale(1.1); }
+.bscene__stage[data-phase="IMPACT"]   .bscene__sprite--attacker { transform: translateX(40px) scale(1.05); }
+.bscene__stage[data-phase="DAMAGE"]   .bscene__sprite--attacker { transform: translateX(50px) scale(1); }
+.bscene__stage[data-phase="RETREAT"]  .bscene__sprite--attacker { transform: translateX(0) scale(1); }
+
+.bscene__stage[data-phase="IMPACT"]   .bscene__sprite--target { animation: target-shake 0.18s ease-out; }
+.bscene__stage[data-phase="DAMAGE"]   .bscene__sprite--target { filter: brightness(1.5) saturate(0.6); transform: translateX(-6px); }
+.bscene__stage[data-phase="DEATH"]     .bscene__sprite--target.is-dying { opacity: 0.2; transform: scale(0.85) rotate(-8deg); filter: grayscale(1); }
+@keyframes target-shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-10px); }
+  50%      { transform: translateX(8px); }
+  75%      { transform: translateX(-4px); }
+}
+
+/* Flash blanco durante IMPACT */
+.bscene__flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  pointer-events: none;
+  animation: bscene-flash 0.18s ease-out;
+  mix-blend-mode: screen;
+  z-index: 3;
+}
+@keyframes bscene-flash { from { opacity: 0.95; } to { opacity: 0; } }
+
+/* Damage number flotante */
+.bscene__damage {
+  position: absolute;
+  top: 20%;
+  right: 6%;
+  font-family: var(--font-cinzel);
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  z-index: 4;
+  text-shadow: 0 0 12px currentColor, 2px 2px 0 rgba(0, 0, 0, 0.8);
+  animation: damage-pop 0.6s ease-out;
+}
+@keyframes damage-pop {
+  0%   { transform: translateY(20px) scale(0.5); opacity: 0; }
+  50%  { transform: translateY(-10px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.bscene__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px 12px;
+  background: rgba(0, 0, 0, 0.55);
+  border-top: 1px solid rgba(255, 215, 0, 0.4);
+}
+.bscene__result {
+  flex: 1;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--color-gold-1);
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   Battle Hand (mano de cartas inferior)
+   ============================================================ */
+.bhand {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  z-index: 5;
+}
+.bhand__left {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 16px;
+}
+.bhand__energy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(10, 8, 16, 0.85);
+  border: 1px solid rgba(201, 168, 76, 0.5);
+  border-radius: 6px;
+}
+.bhand__energy-icon { font-size: 18px; color: #FFD700; }
+.bhand__energy-value {
+  font-family: var(--font-cinzel);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--color-gold-1);
+}
+.bhand__energy-max {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.bhand__retention {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(10, 8, 16, 0.7);
+  border: 1px dashed rgba(201, 168, 76, 0.3);
+  border-radius: 6px;
+}
+.bhand__retention-label {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.08em;
+}
+.bhand__retention-pips {
+  display: flex;
+  gap: 3px;
+}
+.bhand__retention-pip {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 1px;
+}
+.bhand__retention-pip.is-on {
+  background: var(--color-gold-1);
+  border-color: var(--color-gold-3);
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+.bhand__cards {
+  display: flex;
+  gap: 12px;
+}
+.bhand__empty {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 16px 24px;
+  letter-spacing: 0.05em;
+}
+
+.bhand__card {
+  position: relative;
+  width: 110px;
+  height: 150px;
+  background: linear-gradient(180deg, rgba(20, 14, 30, 0.95) 0%, rgba(10, 8, 16, 0.97) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 4px solid currentColor;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  color: inherit;
+}
+.bhand__card:hover { transform: translateY(-6px); box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5); }
+.bhand__card.is-disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.7); }
+.bhand__card.is-playable { border-color: var(--color-gold-3); border-left-color: currentColor; }
+.bhand__card.is-playable:hover { border-color: var(--color-gold-3); }
+
+.bhand__card-cost {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-cinzel);
+  font-size: 14px;
+  font-weight: 900;
+  color: #1a1100;
+  border: 1.5px solid #FFD700;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+}
+.bhand__card-emoji {
+  font-size: 44px;
+  line-height: 1;
+  text-shadow: 0 0 12px currentColor;
+}
+.bhand__card-name {
+  font-family: var(--font-cinzel);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.15;
+  color: var(--color-gold-1);
+}
+.bhand__card-type {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+}
