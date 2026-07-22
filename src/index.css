@@ -861,3 +861,322 @@ body {
 .debug-panel__btn-icon { font-size: 13px; }
 .debug-panel__btn-label { font-size: 10px; }
 .debug-panel__btn--action { flex: 1; justify-content: center; font-size: 10px; }
+
+/* ============================================================
+   Subscreen Header - migas con flecha + estrellas
+   ============================================================ */
+.subscreen__header {
+  position: relative;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.subscreen__back {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  color: var(--color-gold-2);
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.subscreen__back-arrow { font-size: 14px; line-height: 1; }
+.subscreen__back-label { letter-spacing: 0.08em; }
+.subscreen__back:hover { background: rgba(201, 168, 76, 0.2); }
+
+.subscreen__stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 4px;
+  color: var(--color-gold-2);
+  font-family: var(--font-pixel);
+  font-size: 11px;
+}
+.subscreen__star-icon { color: #FFD700; font-size: 14px; }
+.subscreen__star-count { letter-spacing: 0.08em; }
+
+/* ============================================================
+   Campaign Screen (Mapa de Aventura)
+   ============================================================ */
+.campaign__intro {
+  padding: 18px 24px 6px;
+  text-align: center;
+}
+.campaign__intro-lead {
+  font-family: var(--font-cinzel);
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 12px;
+}
+.campaign__progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(201, 168, 76, 0.25);
+}
+.campaign__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700 0%, #c2871f 100%);
+  transition: width 0.5s;
+}
+.campaign__progress-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.05em;
+}
+
+.campaign__regions {
+  padding: 18px 24px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.campaign__region {
+  --region-color: #FFD700;
+  --region-color-rgb: 255, 215, 0;
+  background: linear-gradient(180deg, rgba(20, 14, 30, 0.92) 0%, rgba(10, 8, 16, 0.95) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-left: 4px solid rgba(var(--region-color-rgb), 0.7);
+  border-radius: 8px;
+  padding: 16px 18px;
+  transition: all 0.2s;
+}
+.campaign__region.is-unlocked {
+  border-color: rgba(201, 168, 76, 0.4);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 14px rgba(var(--region-color-rgb), 0.15);
+}
+.campaign__region.is-locked {
+  opacity: 0.55;
+  filter: grayscale(0.45);
+}
+
+.campaign__region-header {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+.campaign__region-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(var(--region-color-rgb), 0.12);
+  border: 1px solid rgba(var(--region-color-rgb), 0.45);
+  border-radius: 50%;
+}
+.campaign__region-emoji { font-size: 28px; line-height: 1; }
+.campaign__region-biome {
+  margin-top: 2px;
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  color: var(--region-color);
+}
+
+.campaign__region-info { min-width: 0; }
+.campaign__region-name {
+  font-family: var(--font-cinzel);
+  font-size: 19px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+.campaign__region-sub {
+  font-family: var(--font-cinzel);
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 2px 0 0;
+}
+
+.campaign__region-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.campaign__region-stars {
+  display: flex;
+  gap: 2px;
+}
+.campaign__region-star {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.18);
+}
+.campaign__region-star.is-on { color: #FFD700; text-shadow: 0 0 6px rgba(255, 215, 0, 0.6); }
+
+.campaign__region-badge {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+.campaign__region-badge--go { background: rgba(201, 168, 76, 0.18); color: var(--color-gold-1); border: 1px solid rgba(201, 168, 76, 0.4); }
+
+.campaign__region-lock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.campaign__region-lock-icon { font-size: 20px; }
+.campaign__region-lock-text {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.campaign__region-desc {
+  margin: 12px 0 8px;
+  font-family: var(--font-cinzel);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  font-style: italic;
+}
+
+.campaign__region-difficulty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.campaign__region-diff-label {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+}
+.campaign__region-diff-stars {
+  color: #FFD700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+}
+.campaign__region-diff-empty {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.campaign__nodes {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.campaign__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 10px 6px;
+  background: rgba(10, 8, 16, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  min-height: 120px;
+  text-align: center;
+  position: relative;
+  transition: all 0.2s;
+}
+.campaign__node:hover {
+  border-color: rgba(var(--region-color-rgb), 0.6);
+  transform: translateY(-2px);
+}
+.campaign__node--batalla { border-top: 3px solid #EF4444; }
+.campaign__node--tesoro { border-top: 3px solid #FFD700; }
+.campaign__node--jefe { border-top: 3px solid #A78BFA; }
+
+.campaign__node.is-completed {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.45);
+}
+.campaign__node.is-current {
+  background: rgba(201, 168, 76, 0.12);
+  border-color: var(--color-gold-3);
+  box-shadow: 0 0 14px rgba(201, 168, 76, 0.4);
+}
+.campaign__node.is-locked { opacity: 0.55; filter: grayscale(0.4); }
+
+.campaign__node-num {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.4);
+}
+.campaign__node-icon { font-size: 24px; line-height: 1; }
+.campaign__node-stars {
+  display: flex;
+  gap: 1px;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.2);
+}
+.campaign__node-stars .is-on { color: #FFD700; }
+.campaign__node-name {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.3;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.campaign__node-boss-mark {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  background: linear-gradient(180deg, #A78BFA 0%, #6B21A8 100%);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.1em;
+}
+.campaign__node-cta {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--color-gold-1);
+  padding: 3px 6px;
+  background: rgba(201, 168, 76, 0.18);
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+
+.campaign__region-claim {
+  margin: 12px auto 0;
+  display: block;
+}
+
+.campaign__footer {
+  padding: 18px 24px 24px;
+  text-align: center;
+}
+.campaign__footer-hint {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}

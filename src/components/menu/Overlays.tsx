@@ -1,20 +1,23 @@
 import { useGameStore } from '../../store/game-store';
 import MainMenu from './MainMenu';
 import SubScreen from './SubScreen';
+import CampaignScreen from './CampaignScreen';
 import type { Screen } from '../../store/game-store';
 
 /**
- * Decide qué overlay mostrar encima del Canvas 3D:
- * - 'menu' → MainMenu
- * - 'tactics' → no overlay (GameHUD se renderiza aparte)
- * - cualquier otro → SubScreen
+ * Decide que overlay mostrar encima del Canvas 3D:
+ * - 'menu' -> MainMenu
+ * - 'tactics' -> no overlay (GameHUD se renderiza aparte)
+ * - 'campaign' -> CampaignScreen custom
+ * - cualquier otro -> SubScreen
  */
 export default function Overlays() {
   const screen = useGameStore((s) => s.screen);
   return (
     <>
       {screen === 'menu' && <MainMenu />}
-      {screen !== 'menu' && screen !== 'tactics' && <SubScreenFor screen={screen} />}
+      {screen === 'campaign' && <CampaignScreen />}
+      {screen !== 'menu' && screen !== 'tactics' && screen !== 'campaign' && <SubScreenFor screen={screen} />}
     </>
   );
 }
