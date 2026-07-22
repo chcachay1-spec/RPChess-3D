@@ -14,6 +14,7 @@ const SCREEN_INFO: Record<Screen, { title: string; subtitle: string; variant: 'g
   menu: { title: '', subtitle: '', variant: 'gold' },
   campaign: { title: 'Adventure', subtitle: 'Campaña narrativa por regiones · 4 regiones · 5 nodos cada una', variant: 'gold' },
   tactics: { title: '', subtitle: '', variant: 'blue' },
+  'mode-select': { title: 'Mode Select', subtitle: 'Choose your victory mode', variant: 'blue' },
   pve: { title: 'PvE', subtitle: 'Regicidio contra la IA · Dificultad 1-3', variant: 'red' },
   pvp: { title: 'PvP', subtitle: 'Multijugador online (próximamente)', variant: 'blue' },
   bestiary: { title: 'Bestiary', subtitle: 'Las 12 piezas del reino (6 fundamentales + 5 tropas + 2 bestias)', variant: 'gold' },
