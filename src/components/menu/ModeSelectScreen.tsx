@@ -111,7 +111,7 @@ export default function ModeSelectScreen() {
         <div className="mode-select__cta">
           <button
             className="menu__btn menu__btn--blue menu__btn--big menu__btn--full"
-            onClick={() => setScreen('tactics')}
+            onClick={() => setScreen('splash')}
             disabled={!selected}
           >
             <span className="menu__btn-icon">\u25B6</span>

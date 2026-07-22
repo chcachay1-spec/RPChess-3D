@@ -12,6 +12,7 @@ interface SubScreenProps {
 
 const SCREEN_INFO: Record<Screen, { title: string; subtitle: string; variant: 'gold' | 'red' | 'blue' }> = {
   menu: { title: '', subtitle: '', variant: 'gold' },
+  splash: { title: 'Cargando', subtitle: 'Iniciando el reino...', variant: 'blue' },
   campaign: { title: 'Adventure', subtitle: 'Campana narrativa por regiones - 4 regiones - 5 nodos cada una', variant: 'gold' },
   tactics: { title: '', subtitle: '', variant: 'blue' },
   'mode-select': { title: 'Mode Select', subtitle: 'Choose your victory mode', variant: 'blue' },

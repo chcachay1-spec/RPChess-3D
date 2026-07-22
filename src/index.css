@@ -3772,3 +3772,261 @@ body {
   color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.05em;
 }
+
+/* ============================================================
+   Splash Screen (transicion menu -> batalla)
+   ============================================================ */
+.splash {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 50;
+  background: radial-gradient(circle at 50% 50%, #1a1108 0%, #050203 70%);
+}
+.splash__bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.06) 0%, transparent 60%);
+  animation: splash-pulse 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes splash-pulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.6; }
+  50%      { transform: scale(1.05); opacity: 1; }
+}
+.splash__crown {
+  font-size: 88px;
+  text-shadow: 0 0 32px rgba(255, 215, 0, 0.7);
+  animation: splash-crown-float 3s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+@keyframes splash-crown-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.splash__title {
+  font-family: var(--font-cinzel);
+  font-size: clamp(48px, 7vw, 84px);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+.splash__subtitle {
+  font-family: var(--font-cinzel);
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 10px;
+  letter-spacing: 0.06em;
+  position: relative;
+  z-index: 1;
+}
+.splash__phases {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 20px;
+  position: relative;
+  z-index: 1;
+}
+.splash__phase {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: rgba(10, 8, 16, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  opacity: 0.4;
+  transform: translateX(-10px);
+  transition: all 0.5s;
+  min-width: 240px;
+}
+.splash__phase.is-on {
+  opacity: 1;
+  transform: translateX(0);
+  background: rgba(201, 168, 76, 0.12);
+  border-color: rgba(201, 168, 76, 0.5);
+}
+.splash__phase-icon { font-size: 18px; }
+.splash__phase-label {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--color-gold-1);
+  letter-spacing: 0.06em;
+}
+.splash__loader {
+  width: 260px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+}
+.splash__loader-bar {
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, #FFD700, transparent);
+  animation: splash-loader 1.6s ease-in-out infinite;
+}
+@keyframes splash-loader {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+.splash__skip {
+  margin-top: 12px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  text-decoration: underline;
+  position: relative;
+  z-index: 1;
+}
+.splash__skip:hover { color: var(--color-gold-1); }
+
+/* ============================================================
+   Battle Result Modal
+   ============================================================ */
+.result-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 30;
+}
+.result-modal {
+  width: min(440px, 90vw);
+  background: linear-gradient(180deg, rgba(20, 14, 30, 0.95) 0%, rgba(10, 8, 16, 0.98) 100%);
+  border: 2px solid var(--color-gold-3);
+  border-radius: 12px;
+  box-shadow: 0 0 28px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+.result-modal__top {
+  padding: 22px 20px 16px;
+  text-align: center;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+.result-modal__emoji {
+  font-size: 56px;
+  text-shadow: 0 0 18px currentColor;
+  margin-bottom: 8px;
+}
+.result-modal__title {
+  font-family: var(--font-cinzel);
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+.result-modal__subtitle {
+  font-family: var(--font-cinzel);
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 8px 0 0;
+}
+
+.result-modal__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 18px 20px;
+}
+.result-modal__stat {
+  background: rgba(10, 8, 16, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 10px 6px;
+  text-align: center;
+}
+.result-modal__stat-value {
+  font-family: var(--font-cinzel);
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-gold-1);
+  line-height: 1;
+}
+.result-modal__stat-label {
+  margin-top: 4px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.06em;
+}
+
+.result-modal__rewards {
+  padding: 10px 20px 4px;
+}
+.result-modal__rewards-title {
+  font-family: var(--font-cinzel);
+  font-size: 13px;
+  margin: 0 0 8px;
+  color: var(--color-gold-2);
+  letter-spacing: 0.06em;
+}
+.result-modal__rewards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.result-modal__reward {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 6px;
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 6px;
+}
+.result-modal__reward-icon { font-size: 22px; line-height: 1; }
+.result-modal__reward-qty {
+  font-family: var(--font-cinzel);
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 4px;
+  color: var(--color-gold-1);
+}
+.result-modal__reward-name {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+.result-modal__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 16px 20px 22px;
+}
+
+/* Botones de demo en el HUD (test victory / defeat) */
+.hud__demo {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.hud__demo .hud__btn {
+  font-size: 9px;
+  padding: 4px 8px;
+  opacity: 0.7;
+}
+.hud__demo .hud__btn:hover { opacity: 1; }

@@ -8,6 +8,7 @@ import { BOARD_COLS, BOARD_ROWS, SHUFFLE_INTERVAL } from '../constants';
 
 export type Screen =
   | 'menu'
+  | 'splash'
   | 'tactics'
   | 'campaign'
   | 'mode-select'
@@ -24,6 +25,14 @@ export type Screen =
   | 'collection'
   | 'draft';
 
+export type BattleResult = 'VICTORIA' | 'DERROTA' | 'EMPATE' | null;
+
+/** Ejército seleccionado en el Draft para precargar el tablero. */
+export interface DraftArmy {
+  vetas: string[];          // ids de piezas vetadas
+  selectedIds: string[];    // ids de piezas elegidas
+}
+
 interface GameState {
   turn: number;
   reliefs: Map<string, ReliefLevel>;
@@ -35,6 +44,10 @@ interface GameState {
   message: string | null;
   shuffledThisTurn: boolean;
   screen: Screen;
+  /** Resultado de batalla finalizado; si es no-null se muestra el modal. */
+  battleResult: BattleResult;
+  /** Ejército armado en el Draft (persiste entre pantallas hasta jugar). */
+  draftArmy: DraftArmy;
 
   init: () => void;
   selectPiece: (id: string | null) => void;
@@ -45,6 +58,10 @@ interface GameState {
   getReliefAt: (coord: AxialCoord) => ReliefLevel;
   recomputeValidMoves: () => void;
   setScreen: (s: Screen) => void;
+  /** Marca la batalla como finalizada y la cierra el modal. */
+  dismissBattleResult: () => void;
+  /** Setea el ejército del Draft. */
+  setDraftArmy: (army: DraftArmy) => void;
 }
 
 const initialPieces = (): Piece[] => {
@@ -84,6 +101,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   hoverTargetId: null,
   message: 'Bienvenido a RPChess 3D — click en una pieza aliada para empezar.',
   shuffledThisTurn: false,
+  battleResult: null,
+  draftArmy: { vetas: [], selectedIds: [] },
   // Lee el screen desde la URL: ?screen=campaign, ?screen=pve, etc.
   // Si no hay param, usa 'menu' como default.
   screen: (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('screen') as Screen) || 'menu',
@@ -161,11 +180,20 @@ export const useGameStore = create<GameState>((set, get) => ({
       .map((p) => (p.id === targetId ? { ...p, hp: p.hp - damage } : p))
       .filter((p) => p.hp > 0);
 
+    // Chequeamos fin de batalla
+    const allyAlive  = newPieces.some((p) => p.team === 'ally');
+    const enemyAlive = newPieces.some((p) => p.team === 'enemy');
+    let battleResult = null as BattleResult;
+    if (!allyAlive || !enemyAlive) {
+      battleResult = !enemyAlive ? 'VICTORIA' : 'DERROTA';
+    }
+
     set({
       pieces: newPieces,
       selectedPieceId: null,
       validMoves: [],
       message: `¡Ataque exitoso! ${target.role} enemigo recibió ${damage} de daño.`,
+      battleResult,
     });
   },
 
@@ -206,4 +234,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   setScreen: (s) => set({ screen: s }),
+
+  dismissBattleResult: () => set({ battleResult: null }),
+
+  setDraftArmy: (army) => set({ draftArmy: army }),
 }));

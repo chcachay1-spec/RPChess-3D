@@ -1,5 +1,6 @@
 import { useGameStore } from '../../store/game-store';
 import { SHUFFLE_INTERVAL } from '../../constants';
+import BattleResultModal from '../menu/BattleResultModal';
 
 export default function GameHUD() {
   const turn = useGameStore((s) => s.turn);
@@ -8,6 +9,10 @@ export default function GameHUD() {
   const pieces = useGameStore((s) => s.pieces);
   const selectedPieceId = useGameStore((s) => s.selectedPieceId);
   const setScreen = useGameStore((s) => s.setScreen);
+  const battleResult = useGameStore((s) => s.battleResult);
+  const dismissBattleResult = useGameStore((s) => s.dismissBattleResult);
+  const testVictory = () => useGameStore.setState({ battleResult: 'VICTORIA' });
+  const testDefeat  = () => useGameStore.setState({ battleResult: 'DERROTA' });
   const deselect = () => useGameStore.getState().selectPiece(null);
 
   const allyCount = pieces.filter((p) => p.team === 'ally').length;
@@ -17,6 +22,18 @@ export default function GameHUD() {
 
   return (
     <div className="hud">
+      {battleResult && (
+        <BattleResultModal
+          result={battleResult}
+          turnsPlayed={turn}
+          kills={Math.max(0, 6 - pieces.filter((p) => p.team === 'enemy').length)}
+          troopsLost={Math.max(0, 6 - pieces.filter((p) => p.team === 'ally').length)}
+          xpEarned={battleResult === 'VICTORIA' ? 150 : 30}
+          goldEarned={battleResult === 'VICTORIA' ? 100 : 20}
+          onDismiss={dismissBattleResult}
+        />
+      )}
+
       {/* Top bar */}
       <div className="hud__top">
         <div className="hud__brand">
@@ -31,6 +48,16 @@ export default function GameHUD() {
           <span className="hud__label">SHUFFLE EN</span>
           <span className="hud__value">{turnsToShuffle}</span>
         </div>
+        {/*
+         * Botones de demo para verificar el modal de fin de batalla
+         * sin tener que jugar hasta el final.
+         */}
+        {!battleResult && (
+          <div className="hud__demo">
+            <button className="hud__btn hud__btn--ghost" onClick={testVictory}>Test Victoria</button>
+            <button className="hud__btn hud__btn--ghost" onClick={testDefeat}>Test Derrota</button>
+          </div>
+        )}
       </div>
 
       {/* Bottom bar */}
