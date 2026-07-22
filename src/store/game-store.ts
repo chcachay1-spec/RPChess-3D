@@ -6,6 +6,7 @@ import { coordKey, getBoardHexes } from '../logic/hex-grid';
 import { getValidMoves } from '../logic/movement';
 import { BOARD_COLS, BOARD_ROWS, SHUFFLE_INTERVAL } from '../constants';
 import { CARDS } from '../data/cards';
+import { chooseEnemyAction, applyEnemyAction } from '../logic/ai';
 
 export type Screen =
   | 'menu'
@@ -232,6 +233,32 @@ export const useGameStore = create<GameState>((set, get) => ({
   endTurn: () => {
     const state = get();
     const newTurn = state.turn + 1;
+
+    // Turno del enemigo: la IA juega automaticamente usando heuristica
+    // greedy (ataca primero si tiene chance, sino se posiciona).
+    let nextPieces = state.pieces;
+    let enemyLog = '';
+    if (newTurn > 1) {
+      const action = chooseEnemyAction({
+        pieces: nextPieces,
+        reliefs: state.reliefs,
+      });
+      if (action) {
+        nextPieces = applyEnemyAction(action, {
+          pieces: nextPieces,
+          reliefs: state.reliefs,
+        });
+        // Texto resumen segun accion
+        const piece = nextPieces.find((p) => p.id === action.pieceId);
+        const role = piece?.role ?? 'enemigo';
+        if (action.action === 'attack') {
+          enemyLog = ` IA: ${role} ataco en (${action.dest.q},${action.dest.r}).`;
+        } else {
+          enemyLog = ` IA: ${role} se movio a (${action.dest.q},${action.dest.r}).`;
+        }
+      }
+    }
+
     const hexes = getBoardHexes(BOARD_COLS, BOARD_ROWS);
     let reliefs = state.reliefs;
     let msg = `Turno ${newTurn} — Tu turno.`;
@@ -243,13 +270,33 @@ export const useGameStore = create<GameState>((set, get) => ({
       msg = `🔄 ¡SHUFFLE! Turno ${newTurn} — Los relieves se han redistribuido.`;
     }
 
+    // Comprobamos fin de partida tras la IA
+    const allyAlive  = nextPieces.some((p) => p.team === 'ally');
+    const enemyAlive = nextPieces.some((p) => p.team === 'enemy');
+    let battleResult = state.battleResult;
+    if (!allyAlive || !enemyAlive) {
+      battleResult = !enemyAlive ? 'VICTORIA' : 'DERROTA';
+    }
+
+    if (msg && enemyLog) msg += enemyLog;
+    if (msg === '') msg = `Turno ${newTurn}.`;
+
     // Carta + energía: roba 1 (descarta la más vieja), +1 energía (max 6).
     const deck = state.battleDeck;
     let hand = [...state.hand, deck[0] ?? 'c-b04'];
     if (hand.length > 2) hand = hand.slice(-2);
     const energy = Math.min(6, state.energy + 1);
 
-    set({ turn: newTurn, reliefs, message: msg, shuffledThisTurn: shuffled, hand, energy });
+    set({
+      turn: newTurn,
+      pieces: nextPieces,
+      reliefs,
+      message: msg,
+      shuffledThisTurn: shuffled,
+      battleResult,
+      hand,
+      energy,
+    });
   },
 
   setHoverTarget: (id) => set({ hoverTargetId: id }),

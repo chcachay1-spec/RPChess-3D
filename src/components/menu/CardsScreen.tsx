@@ -5,7 +5,6 @@ import { CARDS, type CardType, type Rarity } from '../../data/cards';
 // Tamaño fijo del mazo de batalla segun diseño de Cris:
 // pool 30, deck de batalla 10, mano 2, roba 1 por turno.
 const BATTLE_DECK_SIZE = 10;
-const HAND_SIZE = 2;
 
 type TypeFilter = 'all' | CardType;
 
