@@ -77,6 +77,7 @@ const REWARD_NAME: Record<RewardKind, string> = {
 export default function SeasonPassScreen() {
   const setScreen = useGameStore((s) => s.setScreen);
   const [xp, setXp] = useState(DEMO_PLAYER_XP);
+  void setXp;
   const [premium, setPremium] = useState(DEMO_IS_PREMIUM);
   const [claimed, setClaimed] = useState<Set<string>>(() => {
     const s = new Set<string>();
