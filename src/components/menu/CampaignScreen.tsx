@@ -181,7 +181,7 @@ export default function CampaignScreen() {
         {/* Footer */}
         <div className="campaign__footer">
           <p className="campaign__footer-hint">Disponible en v2 — por ahora juga Tacticas del Reino para probar el tablero 3D.</p>
-          <button className="menu__btn menu__btn--blue menu__btn--big" onClick={() => setScreen('tactics')}>
+          <button className="menu__btn menu__btn--blue menu__btn--big" onClick={() => setScreen('mode-select')}>
             <span className="menu__btn-icon">♞</span>
             <span className="menu__btn-label">Jugar Tacticas del Reino</span>
           </button>

@@ -10,6 +10,7 @@ export type Screen =
   | 'menu'
   | 'tactics'
   | 'campaign'
+  | 'mode-select'
   | 'pve'
   | 'pvp'
   | 'bestiary'

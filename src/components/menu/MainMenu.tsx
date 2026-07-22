@@ -31,7 +31,7 @@ interface NavButton {
  */
 const mainButtons: NavButton[] = [
   { label: 'Adventure', screen: 'campaign', variant: 'gold', icon: '🗺️', big: true, span: 'full' },
-  { label: 'Kingdom Tactics', screen: 'tactics', variant: 'blue', icon: '♞', big: true, badge: '3D', span: 'full' },
+  { label: 'Kingdom Tactics', screen: 'mode-select', variant: 'blue', icon: '♞', big: true, badge: '3D', span: 'full' },
   { label: 'PvE', screen: 'pve', variant: 'red', icon: '🛡️', big: true, span: 'half' },
   { label: 'PvP', screen: 'pvp', variant: 'blue', icon: '⚔️', big: true, span: 'half' },
   { label: 'Bestiary', screen: 'bestiary', variant: 'gold', icon: 'ὍC', span: 'third' },
@@ -137,7 +137,7 @@ export default function MainMenu() {
         {/* 2) Kingdom Tactics full */}
         <button
           className="menu__btn menu__btn--blue menu__btn--big menu__btn--full"
-          onClick={() => setScreen('tactics')}
+          onClick={() => setScreen('mode-select')}
         >
           <span className="menu__btn-icon">{'♞'}</span>
           <span className="menu__btn-label">Tacticas del Reino</span>
