@@ -12,6 +12,8 @@ import ConfigScreen from './ConfigScreen';
 import NewsScreen from './NewsScreen';
 import EventsScreen from './EventsScreen';
 import CollectionScreen from './CollectionScreen';
+import PvEScreen from './PvEScreen';
+import PvPScreen from './PvPScreen';
 import type { Screen } from '../../store/game-store';
 
 export default function Overlays() {
@@ -30,7 +32,12 @@ export default function Overlays() {
       {screen === 'news' && <NewsScreen />}
       {screen === 'events' && <EventsScreen />}
       {screen === 'collection' && <CollectionScreen />}
-      {screen !== 'menu' && screen !== 'tactics' && screen !== 'campaign' && screen !== 'mode-select' && screen !== 'bestiary' && screen !== 'cards' && screen !== 'store' && screen !== 'pase' && screen !== 'profile' && screen !== 'config' && screen !== 'news' && screen !== 'events' && screen !== 'collection' && <SubScreenFor screen={screen} />}
+      {screen === 'pve' && <PvEScreen />}
+      {screen === 'pvp' && <PvPScreen />}
+      {screen !== 'menu' && screen !== 'tactics' && ![
+        'campaign','mode-select','bestiary','cards','store','pase','profile',
+        'config','news','events','collection','pve','pvp',
+      ].includes(screen) && <SubScreenFor screen={screen} />}
     </>
   );
 }
