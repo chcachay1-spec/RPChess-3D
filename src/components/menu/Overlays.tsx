@@ -6,6 +6,7 @@ import ModeSelectScreen from './ModeSelectScreen';
 import BestiaryScreen from './BestiaryScreen';
 import CardsScreen from './CardsScreen';
 import StoreScreen from './StoreScreen';
+import SeasonPassScreen from './SeasonPassScreen';
 import type { Screen } from '../../store/game-store';
 
 export default function Overlays() {
@@ -18,7 +19,8 @@ export default function Overlays() {
       {screen === 'bestiary' && <BestiaryScreen />}
       {screen === 'cards' && <CardsScreen />}
       {screen === 'store' && <StoreScreen />}
-      {screen !== 'menu' && screen !== 'tactics' && screen !== 'campaign' && screen !== 'mode-select' && screen !== 'bestiary' && screen !== 'cards' && screen !== 'store' && <SubScreenFor screen={screen} />}
+      {screen === 'pase' && <SeasonPassScreen />}
+      {screen !== 'menu' && screen !== 'tactics' && screen !== 'campaign' && screen !== 'mode-select' && screen !== 'bestiary' && screen !== 'cards' && screen !== 'store' && screen !== 'pase' && <SubScreenFor screen={screen} />}
     </>
   );
 }

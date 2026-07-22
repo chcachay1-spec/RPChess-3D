@@ -1922,3 +1922,264 @@ body {
   border-color: #16A34A;
   color: #BBF7D0;
 }
+
+/* ============================================================
+   Season Pass Screen
+   ============================================================ */
+.season-hero {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+  background: linear-gradient(180deg, rgba(106, 79, 24, 0.18) 0%, transparent 100%);
+}
+.season-hero__crown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  font-size: 56px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.25), transparent 70%);
+  border-radius: 50%;
+  text-shadow: 0 0 18px rgba(255, 215, 0, 0.7);
+}
+.season-hero__name {
+  font-family: var(--font-cinzel);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+.season-hero__subtitle {
+  font-family: var(--font-cinzel);
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 4px 0 8px;
+}
+.season-hero__meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.season-hero__chip {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  color: var(--color-gold-2);
+  letter-spacing: 0.06em;
+}
+.season-hero__upgrade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(167, 139, 250, 0.55);
+  background: linear-gradient(180deg, #6B21A8 0%, #3B1572 100%);
+  color: #fff;
+  font-family: var(--font-cinzel);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-align: center;
+  min-width: 200px;
+}
+.season-hero__upgrade:hover:not(:disabled) {
+  box-shadow: 0 0 18px rgba(167, 139, 250, 0.5);
+  transform: translateY(-1px);
+}
+.season-hero__upgrade.is-premium {
+  background: linear-gradient(180deg, #15803d 0%, #064e3b 100%);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+.season-hero__upgrade-price {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-gold-1);
+  letter-spacing: 0.08em;
+}
+
+.season-xp {
+  padding: 14px 24px 6px;
+}
+.season-xp__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.season-xp__label {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.1em;
+}
+.season-xp__count {
+  font-family: var(--font-cinzel);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-gold-1);
+}
+.season-xp__pct {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 8px;
+}
+.season-xp__bar {
+  position: relative;
+  height: 14px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.season-xp__bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700 0%, #c2871f 100%);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  transition: width 0.4s;
+}
+.season-xp__bar-level {
+  position: absolute;
+  top: -22px;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--color-gold-1);
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+
+.season-tracks {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 24px 4px;
+}
+.season-tracks__pill {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+}
+.season-tracks__pill--free {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #93C5FD;
+}
+.season-tracks__pill--premium {
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.4);
+  color: #DDD6FE;
+}
+
+.season-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 12px 24px 24px;
+}
+.season-level {
+  background: linear-gradient(180deg, rgba(20, 14, 30, 0.92) 0%, rgba(10, 8, 16, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.season-level:hover { border-color: rgba(201, 168, 76, 0.45); }
+.season-level.is-past { border-color: rgba(34, 197, 94, 0.3); }
+.season-level.is-current {
+  border-color: var(--color-gold-3);
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.4);
+}
+.season-level.is-future { opacity: 0.55; }
+
+.season-level__num {
+  text-align: center;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--color-gold-2);
+  letter-spacing: 0.08em;
+}
+
+.season-level__rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.season-level__row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+}
+.season-level__row--free:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.55);
+}
+.season-level__row--premium {
+  background: linear-gradient(180deg, rgba(167, 139, 250, 0.12) 0%, rgba(0, 0, 0, 0.4) 100%);
+  border-color: rgba(167, 139, 250, 0.3);
+}
+.season-level__row--premium:hover:not(:disabled):not(.is-locked-track) {
+  background: rgba(167, 139, 250, 0.25);
+  border-color: rgba(167, 139, 250, 0.7);
+}
+.season-level__row.is-locked-track {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.06);
+  cursor: not-allowed;
+  opacity: 0.7;
+  filter: grayscale(0.5);
+}
+.season-level__row.is-claimed {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.5);
+  color: #BBF7D0;
+  cursor: default;
+}
+.season-level__row.is-claimable {
+  border-color: rgba(255, 215, 0, 0.6);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+.season-level__row:disabled {
+  cursor: not-allowed;
+}
+
+.season-level__row-icon { font-size: 12px; line-height: 1; }
+.season-level__row-qty {
+  font-weight: 700;
+  color: var(--color-gold-1);
+}
+.season-level__row-name {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.06em;
+}
