@@ -8,6 +8,10 @@ import CardsScreen from './CardsScreen';
 import StoreScreen from './StoreScreen';
 import SeasonPassScreen from './SeasonPassScreen';
 import ProfileScreen from './ProfileScreen';
+import ConfigScreen from './ConfigScreen';
+import NewsScreen from './NewsScreen';
+import EventsScreen from './EventsScreen';
+import CollectionScreen from './CollectionScreen';
 import type { Screen } from '../../store/game-store';
 
 export default function Overlays() {
@@ -22,7 +26,11 @@ export default function Overlays() {
       {screen === 'store' && <StoreScreen />}
       {screen === 'pase' && <SeasonPassScreen />}
       {screen === 'profile' && <ProfileScreen />}
-      {screen !== 'menu' && screen !== 'tactics' && screen !== 'campaign' && screen !== 'mode-select' && screen !== 'bestiary' && screen !== 'cards' && screen !== 'store' && screen !== 'pase' && screen !== 'profile' && <SubScreenFor screen={screen} />}
+      {screen === 'config' && <ConfigScreen />}
+      {screen === 'news' && <NewsScreen />}
+      {screen === 'events' && <EventsScreen />}
+      {screen === 'collection' && <CollectionScreen />}
+      {screen !== 'menu' && screen !== 'tactics' && screen !== 'campaign' && screen !== 'mode-select' && screen !== 'bestiary' && screen !== 'cards' && screen !== 'store' && screen !== 'pase' && screen !== 'profile' && screen !== 'config' && screen !== 'news' && screen !== 'events' && screen !== 'collection' && <SubScreenFor screen={screen} />}
     </>
   );
 }
