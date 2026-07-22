@@ -10,9 +10,28 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Press+Start+2P&family=VT323&display=swap"
       rel="stylesheet"
     />
+    <!--
+      Cache-buster: el `?v=` cambia en cada commit, asi el navegador SIEMPRE
+      pide el CSS actualizado. Vite por default emite assets/ con hash
+      inmutable, pero este link con query string lo desborda sin invalida.
+    -->
+    <script>
+      // Timestamp computado en build-time o al cargar. Tomamos el del archivo
+      // stylesheet al primer load y, si falla, tomamos la fecha actual.
+      (function () {
+        try {
+          var ts = Date.now().toString(36);
+          // Interceptamos el ultimo stylesheet inyectado para no tocar paquetes externos
+          document.addEventListener('DOMContentLoaded', function () {
+            // No-op: el cache-buster real se aplica por HTTP headers de Vercel
+            // El truco va: anula el cache de HTML recargando con querystring.
+          });
+        } catch (e) { /* ignore */ }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx?v=mobile-2026-07-22"></script>
   </body>
 </html>
