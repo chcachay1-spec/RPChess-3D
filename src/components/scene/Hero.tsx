@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { ThreeEvent } from '@react-three/fiber';
-import { axialToWorld } from '../../logic/hex-grid';
-import type { Piece, HeroRole, Team, AxialCoord } from '../../types/hex';
+import { axialToWorld, coordKey } from '../../logic/hex-grid';
+import type { Piece, HeroRole, Team, AxialCoord, ReliefLevel } from '../../types/hex';
 import { TEAM_COLORS, TEAM_ACCENT } from '../../data/colors';
 
 interface HeroProps {
@@ -16,6 +16,8 @@ interface HeroProps {
   toPos?: AxialCoord | null;
   /** Si la pieza esta atacando (animacion de lunge adelante). */
   isAttacking?: boolean;
+  /** Relieves del mapa actualizados, para que el salto use la altura del relieve destino. */
+  reliefs?: Map<string, ReliefLevel>;
   onClick?: (id: string) => void;
   onPointerOver?: (id: string) => void;
   onPointerOut?: () => void;
@@ -27,59 +29,67 @@ const ANIM_MS = 380;
 
 export default function Hero({
   piece, baseY, isSelected, isHovered,
-  fromPos, toPos, isAttacking,
+  fromPos, toPos, isAttacking, reliefs,
   onClick, onPointerOver, onPointerOut, onAnimationDone,
 }: HeroProps) {
   const groupRef = useRef<THREE.Group>(null);
   const startTimeRef = useRef<number>(0);
   const [animDone, setAnimDone] = useState(false);
 
-  // Inicializa anim cuando fromPos cambia
+  // Helper: lee la altura del relieve en una coord
+  const reliefAt = (c: AxialCoord | null | undefined): number => {
+    if (!c) return 1;
+    return Number(reliefs?.get(coordKey(c)) ?? 1) * 0.2;
+  };
+  const targetBaseY = baseY; // del hex actual (lo pasa Board)
+  const fromBaseY = reliefAt(fromPos);
+
+  // Inicializa anim cuando fromPos cambia: salta del from visualizado
   useEffect(() => {
     if (fromPos && groupRef.current) {
       const [fx, , fz] = axialToWorld(fromPos, 1.0);
-      groupRef.current.position.set(fx, baseY + 0.5, fz);
+      groupRef.current.position.set(fx, fromBaseY + 0.5, fz);
       startTimeRef.current = performance.now();
       setAnimDone(false);
     }
-  }, [fromPos, baseY]);
+  }, [fromPos, fromBaseY]);
 
   useFrame(() => {
     const g = groupRef.current;
     if (!g) return;
     if (!fromPos || animDone || !piece.position) {
-      // No animar, posicion fija
       const [x, , z] = axialToWorld(piece.position ?? { q: 0, r: 0 }, 1.0);
-      g.position.set(x, baseY + 0.5, z);
+      g.position.set(x, targetBaseY + 0.5, z);
+      g.rotation.set(0, 0, 0);
       return;
     }
     const elapsed = performance.now() - startTimeRef.current;
     const t = Math.min(1, elapsed / ANIM_MS);
-    // Easing: ease-out cubic
     const eased = 1 - Math.pow(1 - t, 3);
     const [fx, , fz] = axialToWorld(fromPos, 1.0);
     const [tx, , tz] = axialToWorld(piece.position, 1.0);
     const x = fx + (tx - fx) * eased;
     const z = fz + (tz - fz) * eased;
-    // Salto: arco parabolico (altura pico a t=0.5)
-    const arc = Math.sin(eased * Math.PI) * 0.8;
-    const y = (baseY + 0.5) + arc;
+    // El arco usa la base mas alta entre destino y origen (efecto salto)
+    const baseArc = Math.max(fromBaseY, targetBaseY) * 0.2;
+    const arc = (Math.sin(eased * Math.PI) * 0.9) + baseArc;
+    const y = arc + 0.5; // centrado en base+0.5
     g.position.set(x, y, z);
     if (isAttacking && t > 0.7) {
-      // Lunge hacia adelante al final del movimiento
       g.rotation.z = Math.sin((t - 0.7) * Math.PI * 3) * 0.15;
+    } else {
+      g.rotation.z = 0;
     }
     if (t >= 1) {
       setAnimDone(true);
-      // Notificamos al padre que la anim termino para limpiar el motion.
-      // (board removera la entrada en motions[]).
+      g.position.set(tx, targetBaseY + 0.5, tz);
       if (typeof onAnimationDone === 'function') onAnimationDone();
     }
   });
 
   if (!piece.position && !toPos) return null;
   const [x, , z] = axialToWorld(piece.position ?? { q: 0, r: 0 }, 1.0);
-  const y = baseY + 0.5;
+  const y = targetBaseY + 0.5;
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();

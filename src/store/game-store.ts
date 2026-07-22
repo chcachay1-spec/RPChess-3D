@@ -72,7 +72,10 @@ interface GameState {
 
   init: () => void;
   selectPiece: (id: string | null) => void;
+  /** Mueve una pieza a un nuevo destino, guardando la pos anterior para anim. */
   movePiece: (id: string, dest: AxialCoord) => void;
+  /** Posiciones anteriores de las piezas que se acaban de mover (para anim). */
+  recentlyMovedFrom: Map<string, AxialCoord>;
   attackPiece: (attackerId: string, targetId: string) => void;
   endTurn: () => void;
   setHoverTarget: (id: string | null) => void;
@@ -131,6 +134,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   shuffledThisTurn: false,
   battleResult: null,
   scene2D: null,
+  recentlyMovedFrom: new Map<string, AxialCoord>(),
   battleDeck: ['c-b04','c-t02','c-x01','c-b02','c-b05','c-t05','c-b07','c-x02','c-t03','c-x05'],
   hand: ['c-b04', 'c-t02'],
   energy: 2,
@@ -180,14 +184,20 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   movePiece: (id, dest) => {
     const state = get();
+    const mover = state.pieces.find((p) => p.id === id);
     const pieces = state.pieces.map((p) =>
       p.id === id ? { ...p, position: dest } : p,
     );
+    const recentlyMovedFrom = new Map(state.recentlyMovedFrom);
+    if (mover && mover.position) {
+      recentlyMovedFrom.set(id, { q: mover.position.q, r: mover.position.r });
+    }
     set({
       pieces,
       selectedPieceId: null,
       validMoves: [],
       message: `Pieza movida a (${dest.q}, ${dest.r}). Click en "Pasar turno" para continuar.`,
+      recentlyMovedFrom,
     });
   },
 

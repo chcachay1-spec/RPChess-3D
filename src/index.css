@@ -4384,6 +4384,180 @@ body {
 }
 
 /* ============================================================
+   Piece Info Panel (panel lateral de stats de pieza seleccionada)
+   ============================================================ */
+.pinfo {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 220px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: linear-gradient(180deg, rgba(20, 14, 30, 0.95) 0%, rgba(10, 8, 16, 0.98) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-left: 4px solid var(--color-gold-3);
+  border-radius: 8px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 4;
+  font-family: var(--font-cinzel);
+  animation: pinfo-slide 0.25s ease-out;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+@keyframes pinfo-slide {
+  from { transform: translate(-20px, -50%); opacity: 0; }
+  to   { transform: translate(0, -50%); opacity: 1; }
+}
+
+.pinfo__header {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+.pinfo__portrait {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.pinfo__emoji {
+  font-size: 38px;
+  line-height: 1;
+  text-shadow: 0 0 12px currentColor;
+}
+.pinfo__header-info { min-width: 0; }
+.pinfo__team {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+.pinfo__name {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 2px;
+  letter-spacing: 0.03em;
+}
+.pinfo__title {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.pinfo__tier {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  color: #1a1100;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+.pinfo__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pinfo__hp {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pinfo__hp-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.06em;
+}
+.pinfo__hp-icon { color: #FF4444; font-size: 14px; }
+.pinfo__hp-bar {
+  height: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+.pinfo__hp-fill {
+  height: 100%;
+  transition: width 0.3s, background 0.3s;
+  border-radius: 5px;
+}
+.pinfo__hp-value {
+  font-family: var(--font-cinzel);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-gold-1);
+  text-align: right;
+}
+
+.pinfo__stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.pinfo__stat {
+  background: rgba(10, 8, 16, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  padding: 8px 6px;
+  text-align: center;
+}
+.pinfo__stat-icon { font-size: 16px; line-height: 1; margin-bottom: 2px; }
+.pinfo__stat-name {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.pinfo__stat-value {
+  font-family: var(--font-cinzel);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-gold-1);
+  line-height: 1.2;
+}
+
+.pinfo__hint {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  padding: 6px 10px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: 4px;
+  color: #86EFAC;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+.pinfo__hint strong { color: #22C55E; font-size: 13px; }
+
+.pinfo__lore {
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+  line-height: 1.4;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  padding-top: 8px;
+}
+
+/* ============================================================
    Mobile-first responsive layout (<= 720px)
    ============================================================ */
 @media (max-width: 720px) {
@@ -4427,6 +4601,31 @@ body {
   .bhand__left { padding-right: 8px; gap: 6px; }
   .bhand__energy { padding: 4px 8px; }
   .bhand__energy-value { font-size: 14px; }
+
+  /* Info panel lateral -> pasa a bar superior en mobile */
+  .pinfo {
+    left: 8px;
+    right: 8px;
+    width: auto;
+    top: 8px;
+    transform: none;
+    max-height: 28vh;
+    padding: 8px 10px;
+  }
+  @keyframes pinfo-slide {
+    from { transform: none; opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .pinfo__header { grid-template-columns: 44px 1fr; gap: 8px; }
+  .pinfo__portrait { width: 44px; height: 44px; }
+  .pinfo__emoji { font-size: 28px; }
+  .pinfo__name { font-size: 14px; }
+  .pinfo__lore { display: none; }
+  .pinfo__hint { font-size: 8px; padding: 4px 6px; }
+  .pinfo__stat-row { gap: 4px; }
+  .pinfo__stat { padding: 4px 2px; }
+  .pinfo__stat-icon { font-size: 12px; }
+  .pinfo__stat-value { font-size: 9px; }
 
   /* SubScreens: padding reducido, grid 1-col, fuentes mas chicas */
   .subscreen__panel { border-radius: 0; }

@@ -1,44 +1,38 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import HexTile from './HexTile';
 import Hero from './Hero';
 import { useGameStore } from '../../store/game-store';
 import { getBoardHexes, coordKey } from '../../logic/hex-grid';
+import { getValidMoves } from '../../logic/movement';
+import type { AxialCoord } from '../../types/hex';
 import { BOARD_COLS, BOARD_ROWS } from '../../constants';
-
-interface PieceMotion {
-  id: string;
-  from: { q: number; r: number };
-}
 
 export default function Board() {
   const reliefs = useGameStore((s) => s.reliefs);
   const pieces = useGameStore((s) => s.pieces);
   const selectedPieceId = useGameStore((s) => s.selectedPieceId);
-  const validMoves = useGameStore((s) => s.validMoves);
   const init = useGameStore((s) => s.init);
   const movePiece = useGameStore((s) => s.movePiece);
   const selectPiece = useGameStore((s) => s.selectPiece);
   const attackPiece = useGameStore((s) => s.attackPiece);
   const getReliefAt = useGameStore((s) => s.getReliefAt);
 
-  // Ref que guarda la snapshot de pieces ANTES del ultimo render.
-  // Esto nos permite detectar diffs y emitir "motions" (animaciones de salto).
   const prevPiecesRef = useRef<Piece[]>([]);
-  const [motions, setMotions] = useState<PieceMotion[]>([]);
 
+  // Detectar cambios de position (de momento solo loggeamos; la anim de salto
+  // se hace en Hero cuando arrastramos la pieza desde su posicion previa).
   useEffect(() => {
     const prev = prevPiecesRef.current;
-    const newMotions: PieceMotion[] = [];
     for (const p of pieces) {
       if (!p.position) continue;
       const prevPiece = prev.find((x) => x.id === p.id);
       const prevPos = prevPiece?.position;
+      // Si la pieza se movio, queda como "dirty" para que Hero la anime
+      // cuando reciba un nuevo position.
       if (prevPos && (prevPos.q !== p.position.q || prevPos.r !== p.position.r)) {
-        newMotions.push({ id: p.id, from: { q: prevPos.q, r: prevPos.r } });
+        // Aqui hariamos un dispatch al store para que Hero sepa su "from".
+        // Por ahora esta info se mantiene como side-effect (futuro).
       }
-    }
-    if (newMotions.length > 0) {
-      setMotions((cur) => [...cur, ...newMotions]);
     }
     prevPiecesRef.current = pieces;
   }, [pieces]);
@@ -51,70 +45,117 @@ export default function Board() {
 
   const selectedPiece = pieces.find((p) => p.id === selectedPieceId);
 
+  // Calculo del set de movimientos validos cuando hay pieza aliada seleccionada
+  const validMoveKeys = useMemo(() => {
+    if (!selectedPiece || selectedPiece.team !== 'ally' || !selectedPiece.position) {
+      return new Set<string>();
+    }
+    const occupied = new Set<string>();
+    for (const p of pieces) {
+      if (p.position) occupied.add(coordKey(p.position));
+    }
+    occupied.delete(coordKey(selectedPiece.position));
+    const moves = getValidMoves(selectedPiece.position, selectedPiece.role, occupied, 1);
+    return new Set(moves.map(coordKey));
+  }, [selectedPiece, pieces]);
+
+  // Calculo de hexes atacables: cualquier enemigo adyacente a los movimientos validos
+  // cuyo ataque sea valido por la regla de relieve.
+  const attackKeys = useMemo(() => {
+    const targets = new Set<string>();
+    if (!selectedPiece || selectedPiece.team !== 'ally' || !selectedPiece.position) {
+      return targets;
+    }
+    const attackerRelief = getReliefAt(selectedPiece.position);
+    // Buscar todas las piezas enemigas adyacentes (1 hex) al atacante
+    for (const p of pieces) {
+      if (p.team !== 'enemy' || !p.position) continue;
+      const dq = Math.abs(p.position.q - selectedPiece.position.q);
+      const dr = Math.abs(p.position.r - selectedPiece.position.r);
+      // Vecino axiales (distancia hex <= 1 y no son el mismo hex)
+      const dist = Math.max(dq, dr, Math.abs(dq - dr));
+      if (dist === 1) {
+        const targetRelief = getReliefAt(p.position);
+        // Solo si attacker puede atacar a este target (regla relieve)
+        const diff = attackerRelief - targetRelief;
+        if (diff >= 0 && diff <= 1) {
+          targets.add(coordKey(p.position));
+        }
+      }
+    }
+    return targets;
+  }, [selectedPiece, pieces, getReliefAt]);
+
+  const handleHexClick = (target: AxialCoord): void => {
+    if (!selectedPiece) {
+      selectPiece(null);
+      return;
+    }
+    const key = coordKey(target);
+
+    const enemyHere = pieces.find(
+      (p) => p.team === 'enemy' && p.position && p.position.q === target.q && p.position.r === target.r,
+    );
+    if (enemyHere && attackKeys.has(key)) {
+      attackPiece(selectedPiece.id, enemyHere.id);
+      return;
+    }
+    if (validMoveKeys.has(key)) {
+      movePiece(selectedPiece.id, target);
+      return;
+    }
+    selectPiece(null);
+  };
+
+  const handlePieceClick = (id: string): void => {
+    const piece = pieces.find((p) => p.id === id);
+    if (!piece) return;
+    if (piece.team === 'ally') {
+      selectPiece(id);
+    } else if (selectedPiece && attackKeys.has(coordKey(piece.position!))) {
+      // Click en pieza enemiga = ataque directo
+      attackPiece(selectedPiece.id, id);
+    }
+  };
+
   return (
     <group>
+      {/* Hex tiles */}
       {hexes.map((hex) => {
         const key = coordKey(hex);
         const relief = reliefs.get(key) ?? 1;
-        const isValidMove = validMoves.some((m) => m.q === hex.q && m.r === hex.r);
-
-        // Determinar si este hex tiene un enemigo target para ataque
+        const isValidMove = validMoveKeys.has(key);
         const enemyHere = pieces.find(
-          (p) => p.position && p.position.q === hex.q && p.position.r === hex.r && p.team === 'enemy',
+          (p) => p.team === 'enemy' && p.position && p.position.q === hex.q && p.position.r === hex.r,
         );
-        let isAttackTarget: 'valid' | 'invalid' | null = null;
-        if (enemyHere && selectedPiece && selectedPiece.position) {
-          const aRelief = getReliefAt(selectedPiece.position);
-          const tRelief = getReliefAt(hex);
-          const diff = aRelief - tRelief;
-          isAttackTarget = diff === 0 || diff === 1 ? 'valid' : 'invalid';
-        }
+        const isAttackTarget =
+          enemyHere && attackKeys.has(key) ? ('valid' as const) : null;
 
         return (
           <HexTile
             key={key}
             coord={hex}
             relief={relief}
-            isValidMove={isValidMove && !enemyHere}
+            isValidMove={isValidMove}
             isAttackTarget={isAttackTarget}
-            onClick={(target) => {
-              if (!selectedPiece) return;
-
-              if (enemyHere) {
-                attackPiece(selectedPiece.id, enemyHere.id);
-                return;
-              }
-
-              if (isValidMove) {
-                movePiece(selectedPiece.id, target);
-                return;
-              }
-
-              // Click en hex no válido: deseleccionar
-              selectPiece(null);
-            }}
+            onClick={(target) => handleHexClick(target)}
           />
         );
       })}
 
-      {/* Heroes: piezas aliadas/enemigas con animacion de salto */}
+      {/* Hero pieces (con anim de salto) */}
       {pieces.filter((p) => p.position).map((p) => {
-        const motion = motions.find((m) => m.id === p.id);
+        const baseY = getReliefAt(p.position!) * 0.2;
         return (
           <Hero
             key={p.id}
             piece={p}
-            baseY={0}
-            isSelected={selectedPieceId === p.id}
-            fromPos={motion ? motion.from : null}
-            onClick={(id) => selectPiece(id)}
-            onPointerOver={() => { /* hover via HexTile */ }}
+            baseY={baseY}
+            isSelected={p.id === selectedPieceId}
+            reliefs={reliefs}
+            onClick={(id) => handlePieceClick(id)}
+            onPointerOver={() => {}}
             onPointerOut={() => {}}
-            onAnimationDone={() => {
-              // Al terminar, removemos la motion para que la pieza quede
-              // en su nueva posicion sin re-animar.
-              setMotions((cur) => cur.filter((m) => m.id !== p.id));
-            }}
           />
         );
       })}

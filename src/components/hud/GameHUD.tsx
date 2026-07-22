@@ -3,6 +3,7 @@ import { SHUFFLE_INTERVAL } from '../../constants';
 import BattleResultModal from '../menu/BattleResultModal';
 import BattleScene2D from '../battle/BattleScene2D';
 import BattleHand from '../battle/BattleHand';
+import PieceInfoPanel from './PieceInfoPanel';
 
 export default function GameHUD() {
   const turn = useGameStore((s) => s.turn);
@@ -115,6 +116,9 @@ export default function GameHUD() {
 
       {/* Mano de cartas: scroleable, 2 cartas visibles, ya con energy counter */}
       <BattleHand />
+
+      {/* Panel lateral con info de pieza seleccionada */}
+      <PieceInfoPanel />
     </div>
   );
 }
